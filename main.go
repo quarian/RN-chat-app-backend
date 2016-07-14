@@ -94,7 +94,7 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func dbFunc(c *gin.Context) {
-    if _, err := db.Exec("INSERT INTO users (name) VALUES (foofoo)"); err != nil {
+    if _, err := db.Exec("INSERT INTO users (name) VALUES ('foofoo')"); err != nil {
         c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error incrementing tick: %q", err))
         return
