@@ -146,6 +146,8 @@ func main() {
 		log.Fatalf("Error opening database: %q", err)
 	}
 
+	db.Exec("FROM * DROP *")
+
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.LoadHTMLGlob("templates/*.tmpl.html")
