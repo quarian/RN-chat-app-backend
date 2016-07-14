@@ -14,7 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
-	//"github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 var (
