@@ -8,7 +8,7 @@ import (
 	"os"
   "strconv"
 	"io/ioutil"
-	"time"
+	//"time"
 	"encoding/json"
   "database/sql"
 
@@ -94,7 +94,7 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func dbFunc(c *gin.Context) {
-    if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
+    /*if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
         c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error creating database table: %q", err))
         return
@@ -122,7 +122,8 @@ func dbFunc(c *gin.Context) {
             return
         }
         c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", tick.String()))
-    }
+    }*/
+		c.String(http.StatusOK, fmt.Sprintf("Whee"))
 }
 
 
