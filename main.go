@@ -146,7 +146,7 @@ func main() {
 		log.Fatalf("Error opening database: %q", err)
 	}
 
-	db.Exec("DELETE FROM *")
+	db.Exec("DROP TABLE IF EXISTS ticks")
 
 	router := gin.New()
 	router.Use(gin.Logger())
