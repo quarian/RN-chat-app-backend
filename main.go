@@ -8,7 +8,7 @@ import (
 	"os"
   "strconv"
 	"io/ioutil"
-	"time"
+	//"time"
 	"encoding/json"
   "database/sql"
 
@@ -94,19 +94,13 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func dbFunc(c *gin.Context) {
-    if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
-        c.String(http.StatusInternalServerError,
-            fmt.Sprintf("Error creating database table: %q", err))
-        return
-    }
-
-    if _, err := db.Exec("INSERT INTO ticks VALUES (now())"); err != nil {
+    if _, err := db.Exec("INSERT INTO users name VALUES (foofoo)"); err != nil {
         c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error incrementing tick: %q", err))
         return
     }
 
-    rows, err := db.Query("SELECT tick FROM ticks")
+    rows, err := db.Query("SELECT * FROM users")
     if err != nil {
         c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error reading ticks: %q", err))
@@ -115,13 +109,13 @@ func dbFunc(c *gin.Context) {
 
     defer rows.Close()
     for rows.Next() {
-        var tick time.Time
-        if err := rows.Scan(&tick); err != nil {
+        var name string
+        if err := rows.Scan(&name); err != nil {
           c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error scanning ticks: %q", err))
             return
         }
-        c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", tick.String()))
+        c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", name))
     }
 }
 
@@ -146,7 +140,7 @@ func main() {
 		log.Fatalf("Error opening database: %q", err)
 	}
 
-	db.Exec("DROP TABLE IF EXISTS ticks")
+	db.Exec("CREATE TABLE users (name text not null)")
 
 	router := gin.New()
 	router.Use(gin.Logger())
