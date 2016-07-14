@@ -8,13 +8,13 @@ import (
 	"os"
   "strconv"
 	"io/ioutil"
-	//"time"
+	"time"
 	"encoding/json"
   "database/sql"
 
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
-	//"github.com/lib/pq"
+	_"github.com/lib/pq"
 )
 
 var (
@@ -94,7 +94,7 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func dbFunc(c *gin.Context) {
-    /*if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
+    if _, err := db.Exec("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)"); err != nil {
         c.String(http.StatusInternalServerError,
             fmt.Sprintf("Error creating database table: %q", err))
         return
@@ -122,8 +122,7 @@ func dbFunc(c *gin.Context) {
             return
         }
         c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", tick.String()))
-    }*/
-		c.String(http.StatusOK, fmt.Sprintf("Whee"))
+    }
 }
 
 
@@ -155,9 +154,8 @@ func main() {
 	router.GET("/", func(c *gin.Context) { c.HTML(http.StatusOK, "index.tmpl.html", nil)
 	})
 	router.GET("/mark", func(c *gin.Context) {
-  c.String(http.StatusOK, string(blackfriday.MarkdownBasic([]byte("**hi!**"))))
-})
-
+  	c.String(http.StatusOK, string(blackfriday.MarkdownBasic([]byte("**hi!**"))))
+	})
 
   router.GET("/repeat", repeatHandler)
 
