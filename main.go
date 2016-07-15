@@ -180,6 +180,7 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	        fmt.Sprintf("Error reading ticks: %q", err))
 	    return
 	}
+	messages := make([][3]string, 10)
 	defer rows.Close()
 	for rows.Next() {
 			var name, message string
@@ -189,8 +190,10 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 					fmt.Sprintf("Error scanning ticks: %q", err))
 					return
 			}
+			messages = append(messages, [3]string{name, message, time.String()})
 			c.String(http.StatusOK, fmt.Sprintf("Sender: %s, message: %s, timestamp %t\n", name, message, time))
 	}
+	log.Println(messages)
 }
 
 func main() {
