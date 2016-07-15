@@ -188,10 +188,8 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 					fmt.Sprintf("Error scanning ticks: %q", err))
 					return
 			}
-			c.String(http.StatusOK,
-				fmt.Sprintf("Read from DB: %s, %s, %s\n", message))
+			c.String(http.StatusOK, fmt.Sprintf(message))
 	}
-
 }
 
 func main() {
