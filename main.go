@@ -174,7 +174,7 @@ func readUsersFromDB(c *gin.Context) {
 func chatHandler(c *gin.Context) {
 	body := c.Request.Body
 	bodyContent, err := ioutil.ReadAll(body)
-	if err == nil {
+	if err != nil {
 		c.String(http.StatusInternalServerError,
 			        fmt.Sprintf("Error opening json body: %q", err))
 		return
