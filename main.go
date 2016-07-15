@@ -176,7 +176,7 @@ func chatHandler(c *gin.Context) {
 	bodyContent, err := ioutil.ReadAll(body)
 	if err == nil {
 		c.String(http.StatusInternalServerError,
-			        fmt.Sprintf("Error opening json: %q", err))
+			        fmt.Sprintf("Error opening json body: %s", err.Error()))
 		return
 	}
 	log.Println(bodyContent)
@@ -186,7 +186,7 @@ func chatHandler(c *gin.Context) {
 		readChatFromDB(participants.Name1, participants.Name2, c)
 	} else {
 	c.String(http.StatusInternalServerError,
-		        fmt.Sprintf("Error opening json: %q", err))
+		        fmt.Sprintf("Error opening json: %s", err.Error()))
 	}
 }
 
