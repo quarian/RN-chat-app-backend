@@ -115,11 +115,11 @@ func instantianteDB() {
 	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
 	db.Exec("CREATE TABLE IF NOT EXISTS chats (name1 text not null, name2 text not null, message text not null)")
 	db.Exec("INSERT INTO users (name) VALUES ('Champ')")
-	db.Exec("INSERT INTO users (name) VALUES ('Friend 1')")
-	db.Exec("INSERT INTO users (name) VALUES ('Friend 2')")
-	db.Exec("INSERT INTO users (name) VALUES ('Friend 3')")
-	db.Exec("INSERT INTO users (name) VALUES ('Friend 4')")
-	db.Exec("INSERT INTO users (name) VALUES ('Friend 5')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend1')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend2')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend3')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend4')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend5')")
 }
 
 func addMessageToDB(name1, name2, message string) {
@@ -154,7 +154,7 @@ func readUsersFromDB(c *gin.Context) {
 }
 
 func readChat(c *gin.Context) {
-	readChatFromDB("Champ", "Friend 3", c)
+	readChatFromDB("Champ", "Friend3", c)
 }
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
