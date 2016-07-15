@@ -171,8 +171,8 @@ func readChat(c *gin.Context) {
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	rows, err := db.Query(
-		"SELECT * FROM chats")
-		//"SELECT * FROM chats WHERE name1 = " + name1 + " AND name2 = " + name2)
+		//"SELECT * FROM chats")
+		"SELECT message FROM chats WHERE name1 = '" + name1 + "' AND name2 = '" + name2 + "'")
 	if err != nil {
 	    c.String(http.StatusInternalServerError,
 	        fmt.Sprintf("Error reading ticks: %q", err))
