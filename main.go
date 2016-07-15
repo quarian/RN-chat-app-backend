@@ -76,6 +76,7 @@ func quoteHandler(c *gin.Context) {
 
 func getJoke(quoteBody []byte) (string, error) {
 	var joke Joke
+	log.Println(quoteBody)
 	err := json.Unmarshal(quoteBody, &joke)
 	log.Println(joke)
 	if err != nil {
