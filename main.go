@@ -182,7 +182,7 @@ func chatHandler(c *gin.Context) {
 	log.Println(bodyContent)
 	var participants ChatParticipants
 	err = json.Unmarshal(bodyContent, &participants)
-	if err != nil {
+	if err == nil {
 		readChatFromDB(participants.Name1, participants.Name2, c)
 	} else {
 	c.String(http.StatusInternalServerError,
