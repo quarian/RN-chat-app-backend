@@ -120,6 +120,8 @@ func readUsersFromDB(c *gin.Context) {
 	    return
 	}
 
+	var users [6]string
+	var i int = 0
 	defer rows.Close()
 	for rows.Next() {
 	    var name string
@@ -128,8 +130,11 @@ func readUsersFromDB(c *gin.Context) {
 	        fmt.Sprintf("Error scanning ticks: %q", err))
 	        return
 	    }
-	    c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", name))
+			users[i] = name
+			i++
 	}
+	jsonResponse, _ := json.Marshal(users)
+	c.String(http.StatusOK, string(jsonResponse))
 }
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
