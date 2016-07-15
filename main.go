@@ -11,6 +11,7 @@ import (
 	//"time"
 	"encoding/json"
   "database/sql"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
@@ -63,8 +64,10 @@ func quoteHandler(c *gin.Context) {
 				c.String(http.StatusOK, err.Error())
 			} else {
 				c.String(http.StatusOK, joke)
-				addMessageToDB(message.Name1, message.Name2, message.Message)
-				addMessageToDB(message.Name2, message.Name1, joke)
+				addMessageToDB(message.Name1, message.Name2,
+					strings.Replace(message.Message, "'", "''", -1))
+				addMessageToDB(message.Name2, message.Name1,
+					strings.Replace(joke, "'", "''", -1))
 			}
 			//c.String(http.StatusOK, joke)
 		}
