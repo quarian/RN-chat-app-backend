@@ -182,14 +182,14 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-			var name1, name2, message string
-			if err := rows.Scan(&name1, &name2, &message); err != nil {
+			var message string
+			if err := rows.Scan(&message); err != nil {
 				c.String(http.StatusInternalServerError,
 					fmt.Sprintf("Error scanning ticks: %q", err))
 					return
 			}
 			c.String(http.StatusOK,
-				fmt.Sprintf("Read from DB: %s, %s, %s\n", name1, name2, message))
+				fmt.Sprintf("Read from DB: %s, %s, %s\n", message))
 	}
 
 }
