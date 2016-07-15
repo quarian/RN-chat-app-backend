@@ -192,8 +192,9 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 					return
 			}
 			messages = append(messages, [3]string{name, message, time.String()})
-			c.String(http.StatusOK, fmt.Sprintf("Sender: %s, message: %s, timestamp %t\n", name, message, time))
 	}
+	jsonResponse, _ := json.Marshal(messages)
+	c.String(http.StatusOK, string(jsonResponse))
 	log.Println(messages)
 }
 
