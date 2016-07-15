@@ -173,10 +173,15 @@ func readUsersFromDB(c *gin.Context) {
 
 func readChat(c *gin.Context) {
 	body := c.Request.Body
-	bodyContent, _ := ioutil.ReadAll(body)
+	bodyContent, err := ioutil.ReadAll(body)
+	if err == nil {
+		c.String(http.StatusInternalServerError,
+			        fmt.Sprintf("Error opening json: %q", err))
+		return
+	}
 	log.Println(bodyContent)
 	var participants ChatParticipants
-	err := json.Unmarshal(bodyContent, &participants)
+	err = json.Unmarshal(bodyContent, &participants)
 	if err != nil {
 		readChatFromDB(participants.Name1, participants.Name2, c)
 	}
