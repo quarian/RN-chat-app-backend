@@ -8,7 +8,7 @@ import (
 	"os"
   "strconv"
 	"io/ioutil"
-	//"time"
+	"time"
 	"encoding/json"
   "database/sql"
 	"strings"
@@ -117,7 +117,7 @@ func instantianteDB() {
 	db.Exec("DROP TABLE IF EXISTS users")
 	db.Exec("DROP TABLE IF EXISTS chats")
 	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
-	db.Exec("CREATE TABLE IF NOT EXISTS chats (name1 text not null, name2 text not null, message text not null)")
+	db.Exec("CREATE TABLE IF NOT EXISTS chats (name1 text not null, name2 text not null, message text not null, time timestamp)")
 	db.Exec("INSERT INTO users (name) VALUES ('Champ')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend1')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend2')")
@@ -128,7 +128,7 @@ func instantianteDB() {
 
 func addMessageToDB(name1, name2, message string) {
 	var values string =
-		"VALUES ('" + name1 + "', '" + name2 + "', '" + message + "')"
+		"VALUES ('" + name1 + "', '" + name2 + "', '" + message + "', now())"
 	var command string = "INSERT INTO chats (name1,name2,message) " + values
 	log.Println(command)
 	result, err := db.Exec(command)
@@ -171,7 +171,7 @@ func readChat(c *gin.Context) {
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	var query string =
-		"SELECT message FROM chats WHERE name1 = '" + name1 + "' AND name2 = '" + name2 + "'"
+		"SELECT message, time FROM chats WHERE name1 = '" + name1 + "' AND name2 = '" + name2 + "'"
 	//"SELECT * FROM chats")
 	log.Println(query)
 	rows, err := db.Query(query)
@@ -183,12 +183,13 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	defer rows.Close()
 	for rows.Next() {
 			var message string
-			if err := rows.Scan(&message); err != nil {
+			var time time.Time
+			if err := rows.Scan(&message, &time); err != nil {
 				c.String(http.StatusInternalServerError,
 					fmt.Sprintf("Error scanning ticks: %q", err))
 					return
 			}
-			c.String(http.StatusOK, fmt.Sprintf(message))
+			c.String(http.StatusOK, fmt.Sprintf("Message: %s, timestamp %t\n", message, time))
 	}
 }
 
