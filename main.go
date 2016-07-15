@@ -193,7 +193,7 @@ func main() {
 
   router.GET("/repeat", repeatHandler)
 
-	router.GET("/quote", quoteHandler)
+	router.POST("/quote", quoteHandler)
 
   router.GET("/db", readUsersFromDB)
 
