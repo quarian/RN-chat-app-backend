@@ -95,12 +95,21 @@ func readResponse(resp *http.Response) ([]byte, error) {
 
 func instantianteDB() {
 	db.Exec("DROP TABLE IF EXISTS users")
+	db.Exec("DROP TABLE IF EXISTS chats")
 	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
+	db.Exec("CREATE TABLE IF NOT EXISTS chats (name1 text not null, name2 text not null, message text not null)")
+	db.Exec("INSERT INTO users (name) VALUES ('Champ')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 1')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 2')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 3')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 4')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 5')")
+}
+
+func addMessageToDB(name1, name2, message string) {
+	var values string =
+		"VALUES (" + name1 + ", " + name2 + ", " + message + ")"
+	db.Exec("INSERT INTO chats (name1, name2, messsage) " + values)
 }
 
 func readUsersFromDB(c *gin.Context) {
@@ -121,6 +130,27 @@ func readUsersFromDB(c *gin.Context) {
 	    }
 	    c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", name))
 	}
+}
+
+func readChatFromDB(name1, name2 string, c *gin.Context) {
+	rows, err := db.Query(
+		"SELECT * FROM chats WHERE name1 = " + name1 + " AND name2 = " + name2)
+	if err != nil {
+	    c.String(http.StatusInternalServerError,
+	        fmt.Sprintf("Error reading ticks: %q", err))
+	    return
+	}
+	defer rows.Close()
+	for rows.Next() {
+			var message string
+			if err := rows.Scan(&message); err != nil {
+				c.String(http.StatusInternalServerError,
+					fmt.Sprintf("Error scanning ticks: %q", err))
+					return
+			}
+			c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", message))
+	}
+
 }
 
 func main() {
