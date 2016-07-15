@@ -125,7 +125,10 @@ func instantianteDB() {
 func addMessageToDB(name1, name2, message string) {
 	var values string =
 		"VALUES (" + name1 + ", " + name2 + ", " + message + ")"
-	db.Exec("INSERT INTO chats (name1, name2, messsage) " + values)
+	_, err := db.Exec("INSERT INTO chats (name1, name2, messsage) " + values)
+	if err != nil {
+		log.Println("Error putting into the db: %q", err.Error())
+	}
 }
 
 func readUsersFromDB(c *gin.Context) {
