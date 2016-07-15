@@ -62,7 +62,8 @@ func quoteHandler(c *gin.Context) {
 			if err != nil {
 				c.String(http.StatusOK, err.Error())
 			} else {
-				c.String(http.StatusOK, message.Name1 + joke)
+				c.String(http.StatusOK, joke)
+				addMessageToDB(message.Name1, message.Name2, message.Message)
 			}
 			//c.String(http.StatusOK, joke)
 		}
@@ -152,6 +153,10 @@ func readUsersFromDB(c *gin.Context) {
 	c.String(http.StatusOK, string(jsonResponse))
 }
 
+func readChat(c *gin.Context) {
+	readChatFromDB("Champ", "Friend 3", c)
+}
+
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	rows, err := db.Query(
 		"SELECT * FROM chats WHERE name1 = " + name1 + " AND name2 = " + name2)
@@ -211,6 +216,8 @@ func main() {
 	router.POST("/quote", quoteHandler)
 
   router.GET("/db", readUsersFromDB)
+
+	router.GET("/chat", readChat)
 
 	router.Run(":" + port)
 }
