@@ -93,32 +93,35 @@ func readResponse(resp *http.Response) ([]byte, error) {
 	return body, err
 }
 
-func dbFunc(c *gin.Context) {
-    if _, err := db.Exec("INSERT INTO users (name) VALUES ('foofoo')"); err != nil {
-        c.String(http.StatusInternalServerError,
-            fmt.Sprintf("Error incrementing tick: %q", err))
-        return
-    }
-
-    rows, err := db.Query("SELECT * FROM users")
-    if err != nil {
-        c.String(http.StatusInternalServerError,
-            fmt.Sprintf("Error reading ticks: %q", err))
-        return
-    }
-
-    defer rows.Close()
-    for rows.Next() {
-        var name string
-        if err := rows.Scan(&name); err != nil {
-          c.String(http.StatusInternalServerError,
-            fmt.Sprintf("Error scanning ticks: %q", err))
-            return
-        }
-        c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", name))
-    }
+func instantianteDB() {
+	db.Exec("CREATE DROP TABLE users")
+	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend 1')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend 2')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend 3')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend 4')")
+	db.Exec("INSERT INTO users (name) VALUES ('Friend 5')")
 }
 
+func readUsersFromDB(c *gin.Context) {
+	rows, err := db.Query("SELECT * FROM users")
+	if err != nil {
+	    c.String(http.StatusInternalServerError,
+	        fmt.Sprintf("Error reading ticks: %q", err))
+	    return
+	}
+
+	defer rows.Close()
+	for rows.Next() {
+	    var name string
+	    if err := rows.Scan(&name); err != nil {
+	      c.String(http.StatusInternalServerError,
+	        fmt.Sprintf("Error scanning ticks: %q", err))
+	        return
+	    }
+	    c.String(http.StatusOK, fmt.Sprintf("Read from DB: %s\n", name))
+	}
+}
 
 func main() {
   var err error
@@ -140,8 +143,6 @@ func main() {
 		log.Fatalf("Error opening database: %q", err)
 	}
 
-	db.Exec("CREATE TABLE users (name text not null)")
-
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.LoadHTMLGlob("templates/*.tmpl.html")
@@ -157,7 +158,7 @@ func main() {
 
 	router.GET("/quote", quoteHandler)
 
-  router.GET("/db", dbFunc)
+  router.GET("/db", readUsersFromDB)
 
 	router.Run(":" + port)
 }
