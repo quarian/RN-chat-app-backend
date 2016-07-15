@@ -171,7 +171,7 @@ func readChat(c *gin.Context) {
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	var query string =
-		"SELECT message, time FROM chats WHERE name1 = '" + name1 + "' AND name2 = '" + name2 + "'"
+		"SELECT message, time FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
 	//"SELECT * FROM chats")
 	log.Println(query)
 	rows, err := db.Query(query)
