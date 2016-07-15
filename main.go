@@ -171,7 +171,7 @@ func readChat(c *gin.Context) {
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	var query string =
-		"SELECT message, time FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
+		"SELECT name1, message, time FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
 	//"SELECT * FROM chats")
 	log.Println(query)
 	rows, err := db.Query(query)
@@ -182,14 +182,14 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	}
 	defer rows.Close()
 	for rows.Next() {
-			var message string
+			var name, message string
 			var time time.Time
-			if err := rows.Scan(&message, &time); err != nil {
+			if err := rows.Scan(&name, &message, &time); err != nil {
 				c.String(http.StatusInternalServerError,
 					fmt.Sprintf("Error scanning ticks: %q", err))
 					return
 			}
-			c.String(http.StatusOK, fmt.Sprintf("Message: %s, timestamp %t\n", message, time))
+			c.String(http.StatusOK, fmt.Sprintf("Sender: %s, message: %s, timestamp %t\n", name, message, time))
 	}
 }
 
