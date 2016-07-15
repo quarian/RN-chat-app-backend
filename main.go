@@ -64,6 +64,7 @@ func quoteHandler(c *gin.Context) {
 			} else {
 				c.String(http.StatusOK, joke)
 				addMessageToDB(message.Name1, message.Name2, message.Message)
+				addMessageToDB(message.Name2, message.Name1, joke)
 			}
 			//c.String(http.StatusOK, joke)
 		}
