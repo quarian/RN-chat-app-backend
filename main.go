@@ -124,7 +124,7 @@ func instantianteDB() {
 
 func addMessageToDB(name1, name2, message string) {
 	var values string =
-		"VALUES (''" + name1 + "'', ''" + name2 + "'', ''" + message + "')"
+		"VALUES ('" + name1 + "', '" + name2 + "', '" + message + "')"
 	var command string = "INSERT INTO chats (name1,name2,message) " + values
 	log.Println(command)
 	result, err := db.Exec(command)
