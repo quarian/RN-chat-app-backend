@@ -94,7 +94,7 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func instantianteDB() {
-	db.Exec("CREATE DROP TABLE IF EXISTS users")
+	db.Exec("DROP TABLE IF EXISTS users")
 	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 1')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 2')")
