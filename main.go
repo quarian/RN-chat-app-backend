@@ -49,7 +49,10 @@ func quoteHandler(c *gin.Context) {
 		if err != nil {
 			c.String(http.StatusOK, err.Error())
 		} else {
-			c.String(http.StatusOK, joke)
+			body := c.Request.Body
+			bodyContent, _ := ioutil.ReadAll(body)
+			c.String(http.StatusOK, string(bodyContent) + joke)
+			//c.String(http.StatusOK, joke)
 		}
 	}
 }
