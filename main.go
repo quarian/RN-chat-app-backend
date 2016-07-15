@@ -94,7 +94,7 @@ func readResponse(resp *http.Response) ([]byte, error) {
 }
 
 func instantianteDB() {
-	db.Exec("CREATE DROP TABLE users")
+	db.Exec("CREATE DROP TABLE IF EXISTS users")
 	db.Exec("CREATE TABLE IF NOT EXISTS users (name text not null)")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 1')")
 	db.Exec("INSERT INTO users (name) VALUES ('Friend 2')")
@@ -142,6 +142,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}
+
+	instantianteDB()
 
 	router := gin.New()
 	router.Use(gin.Logger())
