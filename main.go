@@ -171,7 +171,7 @@ func readUsersFromDB(c *gin.Context) {
 	c.String(http.StatusOK, string(jsonResponse))
 }
 
-func readChat(c *gin.Context) {
+func chatHandler(c *gin.Context) {
 	body := c.Request.Body
 	bodyContent, err := ioutil.ReadAll(body)
 	if err == nil {
@@ -184,9 +184,10 @@ func readChat(c *gin.Context) {
 	err = json.Unmarshal(bodyContent, &participants)
 	if err != nil {
 		readChatFromDB(participants.Name1, participants.Name2, c)
-	}
+	} else {
 	c.String(http.StatusInternalServerError,
 		        fmt.Sprintf("Error opening json: %q", err))
+	}
 }
 
 func readChatFromDB(name1, name2 string, c *gin.Context) {
@@ -256,7 +257,7 @@ func main() {
 
   router.GET("/db", readUsersFromDB)
 
-	router.POST("/chat", readChat)
+	router.POST("/chat", chatHandler)
 
 	router.Run(":" + port)
 }
