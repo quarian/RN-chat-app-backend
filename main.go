@@ -31,6 +31,12 @@ type Joke struct {
 	} `json:"value"`
 }
 
+type ChatMessage struct {
+		Name1 string `json:"name1"`
+		Name2 string `json:"name2"`
+		Message string `json:"message"`
+}
+
 
 func repeatHandler(c *gin.Context) {
 	var buffer bytes.Buffer
@@ -51,7 +57,13 @@ func quoteHandler(c *gin.Context) {
 		} else {
 			body := c.Request.Body
 			bodyContent, _ := ioutil.ReadAll(body)
-			c.String(http.StatusOK, string(bodyContent) + joke)
+			var message ChatMessage
+			err := json.Unmarshal(bodyContent, &message)
+			if err != nil {
+				c.String(http.StatusOK, err.Error())
+			} else {
+				c.String(http.StatusOK, message.Name1 + joke)
+			}
 			//c.String(http.StatusOK, joke)
 		}
 	}
