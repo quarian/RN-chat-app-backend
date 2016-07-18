@@ -220,12 +220,13 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 }
 
 func handleWebsocket(c *gin.Context) {
-	http.Handle("/ws", websocket.Handler(socketSender))
+	handler := websocket.Handler(socketSender)
+	handler.ServeHTTP(c.Writer, c.Request)
 }
 
 func socketSender(ws *websocket.Conn) {
-	log.Printf("Handling websocket")
-	websocket.Message.Send(ws, "This is a message from a web socket!")
+	log.Println("WEBSOCKET")
+	websocket.Message.Send(ws, "MESSAGE FROM WEBSCOCKET")
 }
 
 func main() {
