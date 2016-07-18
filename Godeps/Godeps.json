@@ -51,7 +51,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "d9558e5c97f85372afee28cf2b6059d7d3818919"
+			"Rev": "3797cd8864994d713d909eda5e61ede8683fdc12"
+		},
+		{
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "3797cd8864994d713d909eda5e61ede8683fdc12"
 		},
 		{
 			"ImportPath": "gopkg.in/bluesuncorp/validator.v5",
