@@ -12,7 +12,6 @@ import (
 	"encoding/json"
   "database/sql"
 	"strings"
-	"golang.org/x/net/websocket"
 
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
@@ -219,21 +218,6 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	log.Println(messages)
 }
 
-func handleWebsocket(ws *websocket.Conn) {
-	msg := make([]byte, 512)
-	n, err := ws.Read(msg)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Receive: %s\n", msg[:n])
-
-	m, err := ws.Write(msg[:n])
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Send: %s\n", msg[:m])
-}
-
 func main() {
   var err error
 	port := os.Getenv("PORT")
@@ -272,9 +256,6 @@ func main() {
 	router.POST("/quote", quoteHandler)
 
   router.GET("/db", readUsersFromDB)
-
-	http.Handle("/ws", websocket.Handler(handleWebsocket))
-	http.ListenAndServe(":12345", nil)
 
 	router.POST("/chat", chatHandler)
 
