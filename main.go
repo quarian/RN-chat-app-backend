@@ -219,15 +219,19 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	log.Println(messages)
 }
 
-func handleWebsocket(c *gin.Context) {
-	log.Println("WEBSOCKET HANDLER")
-	handler := websocket.Handler(socketSender)
-	handler.ServeHTTP(c.Writer, c.Request)
-}
+func handleWebsocket(ws *websocket.Conn) {
+	msg := make([]byte, 512)
+	n, err := ws.Read(msg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Receive: %s\n", msg[:n])
 
-func socketSender(ws *websocket.Conn) {
-	log.Println("WEBSOCKET")
-	websocket.Message.Send(ws, "MESSAGE FROM WEBSCOCKET")
+	m, err := ws.Write(msg[:n])
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Send: %s\n", msg[:m])
 }
 
 func main() {
@@ -269,7 +273,8 @@ func main() {
 
   router.GET("/db", readUsersFromDB)
 
-	router.GET("/ws", handleWebsocket)
+	http.Handle("/ws", websocket.Handler(handleWebsocket))
+	http.ListenAndServe(port, nil)
 
 	router.POST("/chat", chatHandler)
 
