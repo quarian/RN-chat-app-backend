@@ -274,7 +274,7 @@ func main() {
   router.GET("/db", readUsersFromDB)
 
 	http.Handle("/ws", websocket.Handler(handleWebsocket))
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(":12345", nil)
 
 	router.POST("/chat", chatHandler)
 
