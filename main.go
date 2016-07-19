@@ -231,6 +231,7 @@ func webSocketHandler(c *gin.Context) {
 		log.Println(err)
 		return
 	}
+	log.Println("CONNECTION OPEN")
 	for {
         t, msg, err := connection.ReadMessage()
         if err != nil {
