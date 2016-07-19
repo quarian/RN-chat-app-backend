@@ -19,6 +19,11 @@
 			"Rev": "4cc2de6207f4128624cbdd16be30f64966c67c08"
 		},
 		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Comment": "v1.0.0-18-g5e2e56d",
+			"Rev": "5e2e56d5dfd46884df1036f828777ee6273f2cff"
+		},
+		{
 			"ImportPath": "github.com/lib/pq",
 			"Comment": "go1.0-cutoff-107-g4dd446e",
 			"Rev": "4dd446efc17690bc53e154025146f73203b18309"

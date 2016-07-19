@@ -13,6 +13,8 @@ import (
   "database/sql"
 	"strings"
 
+	"github.com/gorilla/websocket"
+
 	"github.com/gin-gonic/gin"
 	"github.com/russross/blackfriday"
 	_"github.com/lib/pq"
@@ -22,6 +24,11 @@ var (
 	repeat int
 	db     *sql.DB
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
 
 type Joke struct {
 	Type string `json:"type"`
@@ -218,6 +225,23 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	log.Println(messages)
 }
 
+func webSocketHandler(c *gin.Context) {
+	connection, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for {
+        t, msg, err := connection.ReadMessage()
+        if err != nil {
+						log.Println("ERROR IN WEBSOCKET LOOP")
+            break
+        }
+				log.Println("MESSAGE" + string(msg))
+        connection.WriteMessage(t, msg)
+    }
+}
+
 func main() {
   var err error
 	port := os.Getenv("PORT")
@@ -258,6 +282,8 @@ func main() {
   router.GET("/db", readUsersFromDB)
 
 	router.POST("/chat", chatHandler)
+
+	router.GET("/ws", webSocketHandler)
 
 	router.Run(":" + port)
 }
