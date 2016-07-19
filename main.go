@@ -248,8 +248,8 @@ func webSocketHandler(c *gin.Context) {
 			jokePreface := []byte("Remninds me of a joke - ")
       connection.WriteMessage(t, echo)
 			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
-			addMessageToDB(name1, name2, string(msg))
-			addMessageToDB(name2, name1, string(echo))
+			addMessageToDB(name1, name2, strings.Replace(string(msg), "'", "''", -1))
+			addMessageToDB(name2, name1, strings.Replace(string(echo), "'", "''", -1))
 			addMessageToDB(name2, name1, string(jokePreface))
 		}
   }
