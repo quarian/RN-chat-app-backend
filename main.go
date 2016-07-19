@@ -232,16 +232,28 @@ func webSocketHandler(c *gin.Context) {
 		return
 	}
 	log.Println("CONNECTION OPEN")
+	var first bool = true
+	var name1, name2 string
 	for {
-        t, msg, err := connection.ReadMessage()
-        if err != nil {
-						log.Println("ERROR IN WEBSOCKET LOOP")
-            break
-        }
-				log.Println("MESSAGE" + string(msg))
-        connection.WriteMessage(t, append([]byte("I see, you wrote: "), msg...))
-				connection.WriteMessage(t, []byte("Remninds me of a joke - "))
-    }
+      t, msg, err := connection.ReadMessage()
+      if err != nil {
+					log.Println("ERROR IN WEBSOCKET LOOP")
+          break
+      }
+			if first {
+				splits := strings.Split(string(msg), " ")
+				name1 = splits[0]
+				name2 = splits[1]
+				first = false;
+			}
+			log.Println("MESSAGE" + string(msg))
+			echo := append([]byte("I see, you wrote: "), msg...)
+			jokePreface := []byte("Remninds me of a joke - ")
+      connection.WriteMessage(t, echo)
+			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
+			addMessageToDB(name2, name1, string(echo))
+			addMessageToDB(name2, name1, string(jokePreface))
+  }
 }
 
 func main() {
