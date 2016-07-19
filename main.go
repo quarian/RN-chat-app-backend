@@ -239,7 +239,8 @@ func webSocketHandler(c *gin.Context) {
             break
         }
 				log.Println("MESSAGE" + string(msg))
-        connection.WriteMessage(t, msg)
+        connection.WriteMessage(t, append([]byte("I see, you wrote: "), msg...))
+				connection.WriteMessage(t, []byte("Remninds me of a joke - "))
     }
 }
 
