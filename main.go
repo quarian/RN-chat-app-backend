@@ -235,41 +235,25 @@ func webSocketHandler(c *gin.Context) {
 	var first bool = true
 	var name1, name2 string
 	for {
-      t, msg, err := connection.ReadMessage()
-      if err != nil {
-					log.Println("ERROR IN WEBSOCKET LOOP")
-          break
-      }
-			if first {
-				splits := strings.Split(string(msg), " ")
-				name1 = splits[0]
-				name2 = splits[1]
-			}
-			log.Println("MESSAGE" + string(msg))
+    t, msg, err := connection.ReadMessage()
+    if err != nil {
+				log.Println("ERROR IN WEBSOCKET LOOP")
+        break
+    }
+		if first {
+			splits := strings.Split(string(msg), " ")
+			name1 = splits[0]
+			name2 = splits[1]
+			first = false
+		} else {
 			echo := append([]byte("I see, you wrote: "), msg...)
 			jokePreface := []byte("Remninds me of a joke - ")
       connection.WriteMessage(t, echo)
 			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
-			var query string =
-				"SELECT * FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
-			rows, err := db.Query(query)
-			if (err != nil) {
-				panic(err)
-			}
-			count := checkRowCount(rows)
-			log.Println("ROWS: " + string(count))
 			addMessageToDB(name2, name1, string(echo))
 			addMessageToDB(name2, name1, string(jokePreface))
-			first = false;
+		}
   }
-}
-
-func checkRowCount(rows *sql.Rows) (count int) {
-	count = 0;
-	for rows.Next() {
-			count++
-    }
-    return count
 }
 
 func main() {
