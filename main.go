@@ -251,7 +251,7 @@ func webSocketHandler(c *gin.Context) {
       connection.WriteMessage(t, echo)
 			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
 			var query string =
-				"SELECT COUNT(*) as count FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
+				"SELECT COUNT(*) FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
 			rows, err := db.Query(query)
 			if (err != nil) {
 				panic(err)
@@ -266,7 +266,7 @@ func webSocketHandler(c *gin.Context) {
 
 func checkRowCount(rows *sql.Rows) (count int) {
  	for rows.Next() {
-    	err:= rows.Scan(&count)
+    	err := rows.Scan(&count)
     	if err != nil {
         panic(err)
     	}
