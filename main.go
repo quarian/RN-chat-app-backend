@@ -244,16 +244,34 @@ func webSocketHandler(c *gin.Context) {
 				splits := strings.Split(string(msg), " ")
 				name1 = splits[0]
 				name2 = splits[1]
-				first = false;
 			}
 			log.Println("MESSAGE" + string(msg))
 			echo := append([]byte("I see, you wrote: "), msg...)
 			jokePreface := []byte("Remninds me of a joke - ")
       connection.WriteMessage(t, echo)
 			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
+			var query string =
+				"SELECT COUNT(*) as count FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
+			rows, err := db.Query(query)
+			if (err != nil) {
+				panic(err)
+			}
+			count := checkRowCount(rows)
+			log.Println("ROWS: " + string(count))
 			addMessageToDB(name2, name1, string(echo))
 			addMessageToDB(name2, name1, string(jokePreface))
+			first = false;
   }
+}
+
+func checkRowCount(rows *sql.Rows) (count int) {
+ 	for rows.Next() {
+    	err:= rows.Scan(&count)
+    	if err != nil {
+        panic(err)
+    	}
+    }
+    return count
 }
 
 func main() {
