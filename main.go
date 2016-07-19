@@ -76,8 +76,6 @@ func quoteHandler(c *gin.Context) {
 				c.String(http.StatusOK, err.Error())
 			} else {
 				c.String(http.StatusOK, joke)
-				addMessageToDB(message.Name1, message.Name2,
-					strings.Replace(message.Message, "'", "''", -1))
 				addMessageToDB(message.Name2, message.Name1,
 					strings.Replace(joke, "'", "''", -1))
 			}
@@ -250,6 +248,7 @@ func webSocketHandler(c *gin.Context) {
 			jokePreface := []byte("Remninds me of a joke - ")
       connection.WriteMessage(t, echo)
 			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
+			addMessageToDB(name1, name2, string(msg))
 			addMessageToDB(name2, name1, string(echo))
 			addMessageToDB(name2, name1, string(jokePreface))
 		}
