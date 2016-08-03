@@ -244,13 +244,21 @@ func webSocketHandler(c *gin.Context) {
 			name2 = splits[1]
 			first = false
 		} else {
-			echo := append([]byte("I see, you wrote: "), msg...)
-			jokePreface := []byte("Remninds me of a joke - ")
-      connection.WriteMessage(t, echo)
-			connection.WriteMessage(t, []byte("Remninds me of a joke - "))
-			addMessageToDB(name1, name2, strings.Replace(string(msg), "'", "''", -1))
-			addMessageToDB(name2, name1, strings.Replace(string(echo), "'", "''", -1))
-			addMessageToDB(name2, name1, string(jokePreface))
+			if (strings.Contains(string(msg), "__IMAGE__")) {
+				response := "What a fine picture!"
+				url := string(msg)
+				connection.WriteMessage(t, []byte(response))
+				addMessageToDB(name1, name2, strings.Replace(url, "'", "''", -1))
+				addMessageToDB(name2, name1, response)
+			} else {
+				echo := append([]byte("I see, you wrote: "), msg...)
+				jokePreface := []byte("Remninds me of a joke - ")
+	      connection.WriteMessage(t, echo)
+				connection.WriteMessage(t, jokePreface)
+				addMessageToDB(name1, name2, strings.Replace(string(msg), "'", "''", -1))
+				addMessageToDB(name2, name1, strings.Replace(string(echo), "'", "''", -1))
+				addMessageToDB(name2, name1, string(jokePreface))
+			}
 		}
   }
 }
