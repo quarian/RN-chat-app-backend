@@ -1,5 +1,19 @@
 package db
 
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"io/ioutil"
+	"time"
+	"encoding/json"
+  "database/sql"
+	"strings"
+
+	_"github.com/lib/pq"
+)
+
 var (
 	db     *sql.DB
 )
@@ -21,7 +35,7 @@ func readUsersFromDB(c *gin.Context) {
 	rows, err := db.Query("SELECT * FROM users")
 	if err != nil {
 	    c.String(http.StatusInternalServerError,
-	        fmt.Sprintf("Error reading ticks: %q", err))
+	        fmt.Sprintf("Error slecting users from DB: %q", err))
 	    return
 	}
 
@@ -32,7 +46,7 @@ func readUsersFromDB(c *gin.Context) {
 	    var name string
 	    if err := rows.Scan(&name); err != nil {
 	      c.String(http.StatusInternalServerError,
-	        fmt.Sprintf("Error scanning ticks: %q", err))
+	        fmt.Sprintf("Error reading users from DB: %q", err))
 	        return
 	    }
 			users[i] = name
@@ -49,7 +63,7 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	rows, err := db.Query(query)
 	if err != nil {
 	    c.String(http.StatusInternalServerError,
-	        fmt.Sprintf("Error reading ticks: %q", err))
+	        fmt.Sprintf("Error reading chat: %q", err))
 	    return
 	}
 	messages := make([][3]string, 0)
@@ -59,7 +73,7 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 			var time time.Time
 			if err := rows.Scan(&name, &message, &time); err != nil {
 				c.String(http.StatusInternalServerError,
-					fmt.Sprintf("Error scanning ticks: %q", err))
+					fmt.Sprintf("Error reading chats: %q", err))
 					return
 			}
 			messages = append(messages, [3]string{name, message, time.String()})
@@ -67,4 +81,18 @@ func readChatFromDB(name1, name2 string, c *gin.Context) {
 	jsonResponse, _ := json.Marshal(messages)
 	c.String(http.StatusOK, string(jsonResponse))
 	log.Println(messages)
+}
+
+func addMessageToDB(name1, name2, message string) {
+	var values string =
+		"VALUES ('" + name1 + "', '" + name2 + "', '" + message + "', now())"
+	var command string = "INSERT INTO chats (name1,name2,message,time) " + values
+	log.Println(command)
+	result, err := db.Exec(command)
+	if err != nil {
+		log.Println("Error putting into the db" + err.Error())
+	} else {
+		rowsAffected, _ := result.RowsAffected()
+		log.Println("Result " + string(rowsAffected))
+	}
 }
