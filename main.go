@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-  "strconv"
 	"io/ioutil"
 	"time"
 	"encoding/json"
@@ -16,12 +14,10 @@ import (
 	"github.com/gorilla/websocket"
 
 	"github.com/gin-gonic/gin"
-	"github.com/russross/blackfriday"
 	_"github.com/lib/pq"
 )
 
 var (
-	repeat int
 	db     *sql.DB
 )
 
@@ -50,15 +46,6 @@ type ChatParticipants struct {
 		Name2 string `json:"name2"`
 }
 
-
-func repeatHandler(c *gin.Context) {
-	var buffer bytes.Buffer
-   	for i := 0; i < repeat; i++ {
-        	buffer.WriteString("Hello from Go!\n")
-    	}
-    	c.String(http.StatusOK, buffer.String())
-}
-
 func quoteHandler(c *gin.Context) {
 	quoteBody, err := getNorrisQuoteBody("http://api.icndb.com/jokes/random")
 	if err != nil {
@@ -79,7 +66,6 @@ func quoteHandler(c *gin.Context) {
 				addMessageToDB(message.Name2, message.Name1,
 					strings.Replace(joke, "'", "''", -1))
 			}
-			//c.String(http.StatusOK, joke)
 		}
 	}
 }
@@ -198,7 +184,6 @@ func chatHandler(c *gin.Context) {
 func readChatFromDB(name1, name2 string, c *gin.Context) {
 	var query string =
 		"SELECT name1, message, time FROM chats WHERE (name1 = '" + name1 + "' AND name2 = '" + name2 + "') OR (name1 = '" + name2 + "' AND name2 = '" + name1 + "')"
-	//"SELECT * FROM chats")
 	log.Println(query)
 	rows, err := db.Query(query)
 	if err != nil {
@@ -271,13 +256,6 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	tStr := os.Getenv("REPEAT")
-	repeat, err = strconv.Atoi(tStr)
-	if err != nil {
-		log.Printf("Error converting $REPEAT to an int: %q - Using default\n", err)
-		repeat = 5
-	}
-
 	db, err = sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
@@ -287,16 +265,7 @@ func main() {
 
 	router := gin.New()
 	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
 	router.Static("/static", "static")
-
-	router.GET("/", func(c *gin.Context) { c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
-	router.GET("/mark", func(c *gin.Context) {
-  	c.String(http.StatusOK, string(blackfriday.MarkdownBasic([]byte("**hi!**"))))
-	})
-
-  router.GET("/repeat", repeatHandler)
 
 	router.POST("/quote", quoteHandler)
 
